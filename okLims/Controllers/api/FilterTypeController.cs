@@ -22,7 +22,7 @@ namespace okLims.Controllers.api
             _context = context;
         }
 
-
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetFilterType()
         {
