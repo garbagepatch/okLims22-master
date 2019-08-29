@@ -1,0 +1,87 @@
+﻿@model okLims.Models.ApplicationUser
+@inject okLims.Data.ApplicationDbContext Context
+
+@{
+    ApplicationUser profile = Context.ApplicationUser.SingleOrDefault(x => x.ApplicationUserId.Equals(Model.Id));
+}
+<aside class="main-sidebar">
+   
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- Sidebar user panel -->
+        <div class="user-panel">
+            <div class="pull-left image">
+                <img src="~/images/ulslogo.png" class="image" alt="User Image">
+            </div>
+            <div class="pull-left info">
+                <p>@profile.FirstName @profile.LastName</p>
+                <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+            </div>
+        </div>
+
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu" data-widget="tree">
+            <li class="header">DASHBOARD</li>
+            <li class="@Html.IsSelected(controller: MainMenu.Request.ControllerName)">
+                <a href="@MainMenu.Request.Path">
+                    <i class="fa fa-joint"></i><span>@MainMenu.Request.PageName</span>
+                </a>
+            </li>
+            <li class="@Html.IsSelected(controller: MainMenu.RequestCalendar.ControllerName)">
+                <a href="@MainMenu.RequestCalendar.Path">
+                    <i class="fa fa-calendar"></i><span>@MainMenu.RequestCalendar.PageName</span>
+                </a>
+            </li>
+
+            <li class="@Html.IsSelected(controller: MainMenu.Laboratory.ControllerName, action: MainMenu.Laboratory.ActionName)">
+                <a href="@MainMenu.Laboratory.Path">
+                    <i class="fa fa-gear"></i><span>@MainMenu.Laboratory.PageName</span>
+                </a>
+            </li>
+            <li class="@Html.IsSelected(controller: MainMenu.Instrument.ControllerName, action: MainMenu.Instrument.ActionName)">
+                <a href="@MainMenu.Instrument.Path">
+                    <i class="fa fa-circle"></i><span>@MainMenu.Instrument.PageName</span>
+                </a>
+            </li>
+            <li class="header">FILTER INFO</li>
+            <li class="@Html.IsSelected(controller: MainMenu.FilterSize.ControllerName, action: MainMenu.FilterSize.ActionName)">
+                <a href="@MainMenu.FilterSize.Path">
+                    <i class="fa fa-flask"></i><span>@MainMenu.FilterSize.PageName</span>
+                </a>
+            </li>
+            <li class="@Html.IsSelected(controller: MainMenu.FilterType.ControllerName, action: MainMenu.FilterType.ActionName)">
+                <a href="@MainMenu.FilterType.Path">
+                    <i class="fa fa-magnet"></i><span>@MainMenu.FilterType.PageName</span>
+                </a>
+            </li>
+            <li class="@Html.IsSelected(controller: MainMenu.ControllerType.ControllerName, action: MainMenu.ControllerType.ActionName)">
+                <a href="@MainMenu.ControllerType.Path">
+                    <i class="fa fa-floppy-o"></i><span>@MainMenu.ControllerType.PageName</span>
+                </a>
+            </li>
+            <li class="header">USER & ROLE</li>
+            <li class="@Html.IsSelected(controller: MainMenu.User.ControllerName, action: MainMenu.User.ActionName)">
+                <a href="@MainMenu.User.Path">
+                    <i class="fa fa-users"></i> <span>@MainMenu.User.PageName</span>
+                </a>
+            </li>
+            <li class="@Html.IsSelected(controller: MainMenu.ChangePassword.ControllerName, action: MainMenu.ChangePassword.ActionName)">
+                <a href="@MainMenu.ChangePassword.Path">
+                    <i class="fa fa-key"></i> <span>@MainMenu.ChangePassword.PageName</span>
+                </a>
+            </li>
+            <li class="@Html.IsSelected(controller: MainMenu.Role.ControllerName, action: MainMenu.Role.ActionName)">
+                <a href="@MainMenu.Role.Path">
+                    <i class="fa fa-gear"></i> <span>@MainMenu.Role.PageName</span>
+                </a>
+            </li>
+            <li class="@Html.IsSelected(controller: MainMenu.ChangeRole.ControllerName, action: MainMenu.ChangeRole.ActionName)">
+                <a href="@MainMenu.ChangeRole.Path">
+                    <i class="fa fa-gear"></i> <span>@MainMenu.ChangeRole.PageName</span>
+                </a>
+            </li>
+       
+        </ul>
+    </section>
+    <!-- /.sidebar -->
+</aside>

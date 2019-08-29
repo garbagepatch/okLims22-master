@@ -1,0 +1,47 @@
+[
+  {
+    "outputFileName": "wwwroot/css/site.min.css",
+    "inputFiles": [
+      "wwwroot/css/site.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/site.min.js",
+    "inputFiles": [
+      "wwwroot/js/site.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/css/site.css",
+    "inputFiles": [
+      "wwwroot/adminlte/dist/css/AdminLTE.min.css",
+      "wwwroot/adminlte/dist/css/skins/_all-skins.min.css",
+      "wwwroot/lib/jquery/jqueryui.css",
+      "wwwroot/adminlte/components/bootstrap/dist/css/bootstrap.min.css",
+      "wwwroot/adminlte/components/font-awesome/css/font-awesome.min.css",
+      "wwwroot/adminlte/components/Ionicons/css/ionicons.min.css",
+      "wwwroot/adminlte/plugins/pace/pace.min.css",
+      "wwwroot/calendar.min.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/site.js",
+    "inputFiles": []
+  },
+  {
+    "outputFileName": "wwwroot/css/calendar.min.css",
+    "inputFiles": [
+      "wwwroot/css/calendar.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/calendar.min.js",
+    "inputFiles": [
+      "wwwroot/js/calendar.js"
+    ]
+  }
+]

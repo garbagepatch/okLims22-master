@@ -1,0 +1,131 @@
+﻿@model okLims.Models.Request
+
+@{
+    ViewData["Title"] = "Request Detail";
+  
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title"><i class="fa fa-building"></i> @ViewData["Title"]</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                            title="Collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="box-body">
+
+                <dl>
+                    <dt>@Html.DisplayNameFor(model => model.RequestId)</dt>
+                    <dd>@Html.DisplayFor(model => model.RequestId)</dd>
+                    <dt> @Html.DisplayNameFor(model => model.FilterSize)</dt>
+                    <dd>@Html.DisplayFor(item => item.FilterSize)</dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.ControllerType)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(item =>item.ControllerType)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.FilterType)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(item => item.FilterType)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Laboratory)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(item => item.Laboratory).ToString()
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Start)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Start)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.RequesterEmail)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.RequesterEmail)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.End)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.End)
+                    </dd>
+
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.SpecialDetails)
+                    </dt>
+                    <dd>
+                        <textarea class="form-control" rows="3"> @Html.DisplayFor(model => model.SpecialDetails)</textarea>
+
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.State)
+                    </dt>
+                    <dd>
+                     <form method="get">
+                        @Model.StateId
+                   
+                                                               )
+                     </form>
+                         
+                      
+                    </dd>
+                </dl>
+            </div>
+            <div class="box-footer">
+
+                <form method="post">
+                   <button asp-route="api/Request/insert">Complete</button> 
+                </form>
+            </div>
+
+
+
+            <!-- /.box-body -->
+            <!-- /.box-footer-->
+        </div>
+        <!-- /.box -->
+
+
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+
+
+@section Styles{
+
+}
+
+
+
+
+
+
+
+
+
+
+

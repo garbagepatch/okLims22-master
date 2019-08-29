@@ -1,0 +1,161 @@
+﻿@{
+    ViewData["Title"] = "Request";
+
+}
+@model  Request
+
+
+<div class="content-wrapper">
+
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title text-primary"><i class="fa fa-certificate"></i> @ViewData["Title"]</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                            title="Collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="box-body">
+                <div id="Grid"></div>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer">
+
+            </div>
+            <!-- /.box-footer-->
+        </div>
+        <!-- /.box -->
+    </section>
+    <!-- /.content -->
+</div>
+
+
+@section Scripts{
+
+    <script type="text/javascript">
+        $(function () {
+
+            var dataManager = ej.DataManager({
+                url: "/api/Request",
+                adaptor: new ej.WebApiAdaptor(),
+                offline: true
+            });
+
+            var dataManagerFilterType = ej.DataManager({
+                url: "/api/FilterType",
+                adaptor: new ej.WebApiAdaptor()
+            });
+
+            var dataManagerFilterSize = ej.DataManager({
+                url: "/api/FilterSize",
+                adaptor: new ej.WebApiAdaptor()
+            });
+
+            var dataManagerControllerType = ej.DataManager({
+                url: "/api/ControllerType",
+                adaptor: new ej.WebApiAdaptor()
+            });
+            var dataManagerLaboratory = ej.DataManager({
+                url: "/api/Laboratory",
+                adaptor: new ej.WebApiAdaptor()
+            });
+      
+
+
+
+
+            dataManager.ready.done(function (e) {
+                $("#Grid").ejGrid({
+                    dataSource: ej.DataManager({
+                        json: e.result,
+                        adaptor: new ej.remoteSaveAdaptor(),
+                        insertUrl: "/api/Request/Insert",
+                        updateUrl: "/api/Request/Update",
+                        removeUrl: "/api/Request/Remove",
+                    }),
+                    actionBegin: {
+
+                    },
+                    toolbarSettings: {
+                        showToolbar: true,
+                        toolbarItems: ["add", "edit", "delete", "update", "cancel", "search", "printGrid"]
+                    },
+                    editSettings: {
+                        allowEditing: true,
+                        allowAdding: true,
+                        allowDeleting: true,
+                        showDeleteConfirmDialog: true,
+                        editMode: "dialog"
+                    },
+                    isResponsive: true,
+                    enableResponsiveRow: true,
+                    allowSorting: true,
+                    allowSearching: true,
+                                        allowFiltering: true,
+                    filterSettings: {
+                        columns: [{ field: 'State', matchCase: false, operator: 'startswith', predicate: 'and', value: 'Submitted' }
+
+                            ],},
+                    width: "100%",
+                    allowPaging: true,
+                    allowResizing: true,
+                    pageSettings: { pageSize: 10, printMode: ej.Grid.PrintMode.CurrentPage },
+    
+                    actionBegin: "begin",
+                    columns: [
+                        { headerText: 'Open', template: "<a href='/Request/Detail/{{:RequestId}}'>Open</a>", width:"80" },
+                        { field: "RequestId", headerText: 'Request ID', isPrimaryKey: true, isIdentity: true, visible: false },
+                        { field: "RequesterEmail", headerText: 'RequesterEmail', allowEditing: true },
+                        { field: "FilterID", headerText: 'Filter Type', foreignKeyField: "FilterID", foreignKeyValue: "filterType", dataSource: dataManagerFilterType, editType: "dropdownedit" },
+                        { field: "SizeID", headerText: 'FilterSize', foreignKeyField: "SizeID", foreignKeyValue: "filterSize", dataSource: dataManagerFilterSize, editType: "dropdownedit" },
+                        { field: "Start", headerText: 'Order Date', editType: "datepicker", format: "{0:MM/dd/yyyy}" },
+                        { field: "End", headerText: 'Delivery Date', editType: "datepicker", format: "{0:MM/dd/yyyy}" },
+                        { field: "ControllerID", headerText: 'Controller Type', foreignKeyField: "ControllerID", foreignKeyValue: "controllerType", dataSource: dataManagerControllerType },
+                        { field: "LaboratoryId", headerText: 'Laboratory Name', allowEditing: true, foreignKeyField: "LaboratoryId", foreignKeyValue: "LaboratoryName", dataSource: dataManagerLaboratory },
+                        { field: "SpecialDetails", headerText: 'Special Details', allowEditing: true, editType: "text", width:"140" },
+                        {field: "StateId", headerText: "Request State", foreignkeyField: "StateId", foreignKeyValue:"State", allowEditing: false, width: "100"},
+            
+                        
+                    ],
+                    actionComplete: "complete",
+           
+                });
+            });
+
+
+        });
+       
+        function complete(args) {
+            if (args.requestType == 'beginedit') {
+                if (args.rowData.State == "Complete") {
+                    args.cancel = true
+                }else
+                $("#" + this._id + "_dialogEdit").ejDialog({ title: "Edit Record" });
+            }
+        };
+        function begin(args) {
+            if (args.requestType == "beginedit") {
+                if (args.rowData.State == "Complete") {
+                    args.cancel = true
+                }
+            }
+        };
+  
+                
+        
+        
+        
+    </script>
+
+
+}
+{}
+   

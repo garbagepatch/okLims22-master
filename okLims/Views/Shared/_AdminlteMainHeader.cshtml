@@ -1,0 +1,40 @@
+﻿@model okLims.Models.ApplicationUser
+@inject okLims.Data.ApplicationDbContext Context
+
+
+@{
+    ApplicationUser profile = Context.ApplicationUser.SingleOrDefault(x => x.ApplicationUserId.Equals(Model.Id));
+}
+
+<header class="main-header">
+    <!-- Logo -->
+    <a href="/" class="logo">
+        <!-- mini logo for sidebar mini 50x50 pixels -->
+        <span class="logo-mini"><b>Stuff and Things</b></span>
+        <!-- logo for regular state and mobile devices -->
+        <span class="logo-lg"><b>Bioreactor</b>LIMS</span>
+    </a>
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top">
+        <!-- Sidebar toggle button-->
+        <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+            <span class="sr-only">Toggle navigation</span>
+        </a>
+        <div class="navbar-custom-menu">
+            <ul class="nav navbar-nav">
+                @if (Model != null)
+                {
+                    <!-- User Account: style can be found in dropdown.less -->
+                    <li class="user-footer">
+           
+                            <button type="submit" href="@Url.Action("ApplicationUser", "UserRole")" class="btn btn-default btn-flat">Profile</button>                       
+                   
+                                <button type="submit" asp-controller="Account" asp-action="Logout" formmethod="post" class="btn btn-default btn-flat">Sign out</button>
+                            
+                   
+                    </li>}
+            </ul>
+
+            </div>
+            </nav>
+</header>
