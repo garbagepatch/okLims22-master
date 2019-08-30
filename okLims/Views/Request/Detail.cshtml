@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Request Detail";
-  
+
 }
 
 <!-- Content Wrapper. Contains page content -->
@@ -36,7 +36,7 @@
                     </dt>
 
                     <dd>
-                        @Html.DisplayFor(item =>item.ControllerType)
+                        @Html.DisplayFor(item => item.ControllerType)
                     </dd>
                     <dt>
                         @Html.DisplayNameFor(model => model.FilterType)
@@ -55,15 +55,9 @@
                     <dt>
                         @Html.DisplayNameFor(model => model.Start)
                     </dt>
-                    <dd>
-                        @Html.DisplayFor(model => model.Start)
-                    </dd>
-                    <dt>
-                        @Html.DisplayNameFor(model => model.RequesterEmail)
-                    </dt>
-                    <dd>
-                        @Html.DisplayFor(model => model.RequesterEmail)
-                    </dd>
+                    <dd> @Html.DisplayFor(model => model.Start)   </dd>
+                    <dt>@Html.DisplayNameFor(model => model.RequesterEmail)</dt>             
+                    <dd>@Html.DisplayFor(model => model.RequesterEmail)</dd>
                     <dt>
                         @Html.DisplayNameFor(model => model.End)
                     </dt>
@@ -80,23 +74,20 @@
 
                     </dd>
                     <dt>
-                        @Html.DisplayNameFor(model => model.State)
+                        @Html.DisplayNameFor(model => model.StateId)
                     </dt>
+            
                     <dd>
-                     <form method="get">
-                        @Model.StateId
-                   
-                                                               )
-                     </form>
-                         
-                      
+                        <input type="text" id="StateId"  formmethod="get"/>
                     </dd>
+
+
                 </dl>
             </div>
             <div class="box-footer">
 
                 <form method="post">
-                   <button asp-route="api/Request/insert">Complete</button> 
+                    <button asp-route="api/Request/Update">Complete</button>
                 </form>
             </div>
 
@@ -117,6 +108,24 @@
 
 @section Styles{
 
+}
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+
+            var dataManager = ej.DataManager({
+                url: "/api/RequestLine",
+                adaptor: new ej.WebApiAdaptor(),
+                headers: [{ "RequestId": @Model.RequestId}],
+                offline: true
+            });
+
+            var dataManagerState = ej.DataManager({
+                url: "/api/RequestState",
+                adaptor: new ej.WebApiAdaptor()
+            });
+
+ </script>        
 }
 
 

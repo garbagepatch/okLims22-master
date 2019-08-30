@@ -9,9 +9,9 @@
     toolbarItems.Add("Delete");
     toolbarItems.Add("Update");
     toolbarItems.Add("Cancel");
-    toolbarItems.Add(new { text = "Click", tooltipText = "Click", prefixIcon = "e-expand", id = "Click" });
+ 
 }
-@model Instrument
+@model okLims.Models.Instrument
     <body>
         <div class="content-wrapper">
 
@@ -32,8 +32,8 @@
                         </div>
                     </div>
                     <div class="box-body">
-                        <ejs-grid id="Grid" allowExcelExport="true" allowResizing="true" allowFiltering="true" allowSelection="true" allowPaging="true" toolbarClick="toolbarClick" toolbar=toolbarItems>
-                            <e-data-manager adaptor="WebApiAdaptor" insertUrl="/api/Instruments/Insert" updateUrl="/api/Instruments/Update" removeUrl="/api/Instruments/Remove" crossDomain="true"></e-data-manager>
+                        <ejs-grid id="Grid" allowExcelExport="true" allowResizing="true" allowFiltering="true" allowSelection="true"  toolbar=toolbarItems >
+                            <e-data-manager adaptor="WebApiAdaptor" insertUrl="/api/Instrument/Insert" updateUrl="/api/Instrument/Update" removeUrl="/api/Instrument/Remove" crossDomain="true"></e-data-manager>
                             <e-grid-editSettings allowAdding="true" allowDeleting="true" allowEditing="true" mode="Dialog" allowEditOnDblClick="true"></e-grid-editSettings>
                             <e-grid-columns>
                                 <e-grid-column field="InstrumentId" headerText="Instrument ID" isPrimaryKey="true" width="50" isIdentity="true" visible="false"></e-grid-column>
@@ -42,7 +42,7 @@
                                 <e-grid-column field="MaintenanceInterval" headerText="Maintence Length (months)" editType="numericedit"></e-grid-column>
                                 <e-grid-column field="CalibrationDate" headerText="Calibration Date" editType="datepickeredit"></e-grid-column>
                                 <e-grid-column field="CalibrationLength" headerText="Calibration Length(months)" editType="numericedit"></e-grid-column>
-                                <e-grid-column field="CalibrationDue" headerText="Calibration Due" allowEditing="false"></e-grid-column>
+                                <e-grid-column field="CalibrationDue" headerText="Calibration Due" allowEditing="false" ></e-grid-column>
                             </e-grid-columns>
 
                         </ejs-grid>
@@ -58,13 +58,7 @@
             <!-- /.content -->
         </div>
     </body>
-<script>
-    function toolbarClick(args) {
-        if (args.item.id === 'Click') {
-            alert("Custom toolbar click...");
-        }
-    }
-</script>
+
 
 <style>
     .e-expand::before {

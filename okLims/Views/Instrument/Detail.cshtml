@@ -1,4 +1,178 @@
-﻿@page
-@model okLims.Views.Instrument.DetailModel
-@{
+﻿
+@model okLims.Models.Instrument
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title"><i class="fa fa-building"></i> @ViewData["Title"]</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                            title="Collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="content-container-fluid">
+                    <div class="row">
+                        <dl class="dl-horizontal">
+                            <dt>
+                                @Html.DisplayNameFor(model => model.InstrumentId)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.InstrumentId)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.InstrumentName)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.InstrumentName)
+                            </dd>
+                         
+                            <dt>
+                                @Html.DisplayNameFor(model => model.CalibrationDate)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.CalibrationDate)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.CalibrationDue)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.CalibrationDue)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.CalibrationLength)
+                            </dt>
+                           <dd>
+                               @Html.DisplayFor(model => model.CalibrationLength)
+                           </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.MaintenanceDate)
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.MaintenanceDate)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.MaintenanceInterval)
+
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.MaintenanceInterval)
+                            </dd>
+
+                        </dl>
+                    </div>
+
+
+                </div>
+            </div>
+            <!-- /.box-body -->
+            <!-- /.box-footer-->
+        </div>
+        <!-- /.box -->
+      
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+
+
+@section Styles{
+
 }
+
+@section Scripts{
+
+    <script type="text/javascript">
+        $(function () {
+
+            var dataManager = ej.DataManager({
+                url: "/api/InstrumentLine",
+                adaptor: new ej.WebApiAdaptor(),
+                headers: [{ "InstrumentId": @Model.InstrumentId}],
+                offline: true
+            });
+
+     
+
+            var dataManagerInstrument = ej.DataManager({
+                url: "/api/Instrument",
+                adaptor: new ej.WebApiAdaptor()
+            });
+
+        
+
+            dataManager.ready.done(function (e) {
+            $("#Grid").ejGrid({
+                dataSource: ej.DataManager({
+                    json: e.result,
+                    adaptor: new ej.remoteSaveAdaptor(),
+                    insertUrl: "/api/InstrumentLine/Insert",
+                    updateUrl: "/api/InstrumentLine/Update",
+                    removeUrl: "/api/InstrumentLine/Remove",
+                }),
+                toolbarSettings: {
+                    showToolbar: true,
+                    toolbarItems: ["add", "edit", "delete", "update", "cancel"]
+                },
+                editSettings: {
+                    allowEditing: true,
+                    allowAdding: true,
+                    allowDeleting: true,
+                    showDeleteConfirmDialog: true,
+
+                },
+                allowPaging: true,
+                columns: [
+                    { 
+                    { field: "InstrumentId", headerText: 'Instrument Id', defaultValue: @Model.InstrumentId, foreignKeyField: "InstrumentId", foreignKeyValue: "InstrumentName", dataSource: dataManagerInstrument, visible: false },
+                    { field: "CalibrationDate", headerText: 'Calibration Date', defaultValue: @Model.CalibrationDate editType:"datepickeredit"},
+                    { field: "CalibrationLength", headerText: 'Cal in Months', defaultValue: @Model.CalibrationLength editType:"numericedit" },
+                    { field: "CalibrationDue", headerText: 'Cal Due', defaultValue: @Model.CalibrationDue },
+                    { field: "MaintenanceDate", headerText: 'Maint Date', defaultValue: @Model.MaintenanceDate, editType: "datepickeredit" },
+                    { field: "MaintenanceInterval", headerText: 'Maint Time', defaultValue: @Model.MaintenanceInterval, editType: "numericedit" },
+    
+                ],
+                actionComplete: "complete",
+            });
+            });
+
+
+
+
+        });
+
+        function complete(args) {
+
+            if (args.requestType == 'beginedit') {
+                $("#" + this._id + "_dialogEdit").ejDialog({ title: "Edit Record" });
+            }
+            if (args.requestType == 'save' || args.requestType == 'delete') {
+                RewriteTotal(args.data.InstrumentId);
+            }
+        }
+
+        function RewriteTotal(salesOrderId) {
+            $.ajax({
+                type: 'GET',
+                url: '/api/Instrument/GetById/' + InstrumentId,
+                success: function (data) {
+                   
+                }
+            });
+        }
+
+
+
+    </script>
+}
+

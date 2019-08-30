@@ -111,6 +111,20 @@ namespace okLims.Controllers.api
             
             return Ok(Request);
         }
+        [AllowAnonymous]
+        [HttpPost("[action]")]
+        public async Task<IActionResult> SubmitRequest([FromBody]CrudViewModel<Request> payload)
+        {
+            Request request = payload.value;
+            _context.Request.Add(request);
+            _context.SaveChanges();
+            await _emailSender.SendEmailAsync(request.RequesterEmail, "Order Received", "thank you");
+
+            this.UpdateRequest(request.RequestId);
+
+            return Ok(request);
+
+        }
         [HttpPost("[action]")]
         public async Task<IActionResult> Detail([FromBody]CrudViewModel<Request> payload)
         {

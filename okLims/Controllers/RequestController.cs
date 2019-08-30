@@ -65,9 +65,14 @@ namespace okLims.Controllers
             return View();
             
         }
+        [AllowAnonymous]
+ 
       public IActionResult SubmitRequest()
         {
-            return View(); 
+           
+
+            return View();
+         
         }
 
        
