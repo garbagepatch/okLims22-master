@@ -276,14 +276,14 @@ namespace okLims.Migrations
                 name: "Request",
                 columns: table => new
                 {
-                    RequestId = table.Column<int>(nullable: false)
+                    EventId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     ControllerID = table.Column<int>(nullable: false),
                     SizeID = table.Column<int>(nullable: false),
                     FilterID = table.Column<int>(nullable: false),
                     StatusID = table.Column<int>(nullable: false),
                     LaboratoryId = table.Column<int>(nullable: false),
-                    SpecialDetails = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
                     RequesterEmail = table.Column<string>(nullable: true),
                     StateId = table.Column<int>(nullable: false),
                     Start = table.Column<DateTime>(nullable: false),
@@ -292,7 +292,7 @@ namespace okLims.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Request", x => x.RequestId);
+                    table.PrimaryKey("PK_Request", x => x.EventId);
                     table.ForeignKey(
                         name: "FK_Request_ControllerType_ControllerID",
                         column: x => x.ControllerID,
@@ -325,24 +325,24 @@ namespace okLims.Migrations
                 {
                     RequestLineId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    RequestId = table.Column<int>(nullable: false),
+                    EventId = table.Column<int>(nullable: false),
                     Start = table.Column<string>(nullable: true),
                     End = table.Column<string>(nullable: true),
                     ControllerID = table.Column<int>(nullable: false),
                     SizeID = table.Column<int>(nullable: false),
                     FilterID = table.Column<int>(nullable: false),
                     LaboratoryId = table.Column<int>(nullable: false),
-                    SpecialDetails = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
                     RequesterEmail = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_RequestLine", x => x.RequestLineId);
                     table.ForeignKey(
-                        name: "FK_RequestLine_Request_RequestId",
-                        column: x => x.RequestId,
+                        name: "FK_RequestLine_Request_EventId",
+                        column: x => x.EventId,
                         principalTable: "Request",
-                        principalColumn: "RequestId",
+                        principalColumn: "EventId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -411,9 +411,9 @@ namespace okLims.Migrations
                 column: "SizeID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RequestLine_RequestId",
+                name: "IX_RequestLine_EventId",
                 table: "RequestLine",
-                column: "RequestId");
+                column: "EventId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -13,8 +13,7 @@ namespace okLims.Models
         [Key]
         public int FilterID { get; set; }
         public string filterType { get; set; }
-        public int RequestFK { get; set; }
-     public ICollection<Request> Requests { get; set; }
+
         public static FilterType[] GetFilterTypes()
         {
             FilterType fedbatch = new FilterType

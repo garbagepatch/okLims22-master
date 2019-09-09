@@ -325,7 +325,7 @@ namespace okLims.Migrations
 
             modelBuilder.Entity("okLims.Models.Request", b =>
                 {
-                    b.Property<int>("RequestId")
+                    b.Property<int>("EventId")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -341,13 +341,13 @@ namespace okLims.Migrations
 
                     b.Property<int>("SizeID");
 
-                    b.Property<string>("SpecialDetails");
+                    b.Property<string>("Description");
 
                     b.Property<DateTime>("Start");
 
                     b.Property<int>("StateId");
 
-                    b.HasKey("RequestId");
+                    b.HasKey("EventId");
 
                     b.HasIndex("ControllerID");
 
@@ -376,19 +376,19 @@ namespace okLims.Migrations
 
                     b.Property<int>("LaboratoryId");
 
-                    b.Property<int>("RequestId");
+                    b.Property<int>("EventId");
 
                     b.Property<string>("RequesterEmail");
 
                     b.Property<int>("SizeID");
 
-                    b.Property<string>("SpecialDetails");
+                    b.Property<string>("Description");
 
                     b.Property<string>("Start");
 
                     b.HasKey("RequestLineId");
 
-                    b.HasIndex("RequestId");
+                    b.HasIndex("EventId");
 
                     b.ToTable("RequestLine");
                 });
@@ -491,7 +491,7 @@ namespace okLims.Migrations
                 {
                     b.HasOne("okLims.Models.Request", "Request")
                         .WithMany("RequestLines")
-                        .HasForeignKey("RequestId")
+                        .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

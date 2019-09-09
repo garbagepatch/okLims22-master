@@ -9,12 +9,11 @@ namespace okLims.Models
     public class Laboratory
     {
 
-
+        [Key]
         public int LaboratoryId { get; set; }
         
         public string LaboratoryName { get; set; }
-        public int RequestFK { get; set; }
-        public ICollection<Request> Requests { get; set; }
+
         public static Laboratory[] Laboratories()
         {
             Laboratory first = new Laboratory

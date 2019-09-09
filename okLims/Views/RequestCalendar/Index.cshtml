@@ -1,21 +1,27 @@
-@{ 
+@{
     Layout = "_LayoutCalender";
 }
 <div id="calendar-wrapper">
     <div id='calendar'></div>
 </div>
 
-<div class="modal fade" id="requestModal" role="dialog" aria-labelledby="requestModalLabel">
+<div class="modal fade" id="eventModal" role="dialog" aria-labelledby="eventModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="requestModalLabel">Request</h4>
+                <h4 class="modal-title" id="eventModalLabel">Request</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
-                <form id="requestForm">
+                <form id="eventForm">
                     <div class="form-group row">
-                        <label for="" class="col-sm-3 col-form-label">Requester Email</label>
+                        <label for="" class="col-sm-3 col-form-label">Title</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="EventTitle">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-sm-3 col-form-label">RequesterEmail</label>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" id="RequesterEmail">
                         </div>
@@ -23,13 +29,19 @@
                     <div class="form-group row">
                         <label for="" class="col-sm-3 col-form-label">Start Time</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="Start">
+                            <input type="text" class="form-control" id="StartTime">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="" class="col-sm-3 col-form-label">End Time</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="End">
+                            <input type="text" class="form-control" id="EndTime">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-sm-3 col-form-label">Description</label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" id="Description" rows="5"></textarea>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -51,34 +63,41 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-sm-3 col-form-label">Laboratory Name</label>
+                        <label for="" class="col-sm-3 col-form-label">Laboratory</label>
                         <div class="col-sm-9">
-                            <input type="text" class="dropdown" id="LaboratoryId">
+                            <input type="text" class="dropdown" id="LaboratoryId" />
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="" class="col-sm-3 col-form-label">SpecialDetails</label>
-                        <div class="col-sm-9">
-                            <textarea class="form-control" id="SpecialDetails" rows="5"></textarea>
+                        <div class="col-sm-3 offset-sm-9">
+                            <label><input type="checkbox" id="AllDay" /> AllDay</label>
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label for="" class="col-sm-3 col-form-label">State</label>
-                        <div class="col-sm-9">
-                            <input type="text" contenteditable="false" id="StateId" />
-                        </div>
-                    </div>
-
-                    <input type="hidden" id="isNewRequest" />
+                    <input type="hidden" id="isNewEvent" />
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" id="deleteRequest">Delete</button>
+                <button type="button" class="btn btn-danger" id="deleteEvent">Delete</button>
                 <div>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="requestModalSave">Save Changes</button>
+                    <button type="button" class="btn btn-primary" id="eventModalSave">Save Changes</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+@section scripts{
+
+    <script type="text/javascript">
+         $(function () {
+
+            $('#calendar').fullCalendar({
+                events: 'api/RequestCalendar'
+            });
+
+        });
+
+    </script>
+
+
+}

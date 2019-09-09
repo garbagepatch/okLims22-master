@@ -2,7 +2,7 @@
     ViewData["Title"] = "Request";
 
 }
-@model  Request
+@model  Event
 
 
 <div class="content-wrapper">
@@ -68,7 +68,10 @@
                 adaptor: new ej.WebApiAdaptor()
             });
       
-
+            var dataManagerState = ej.DataManager({
+                url: "/api/RequestState",
+                adaptor: new ej.WebApiAdaptor()
+            });
 
 
 
@@ -101,7 +104,7 @@
                     allowSearching: true,
                                         allowFiltering: true,
                     filterSettings: {
-                        columns: [{ field: 'State', matchCase: false, operator: 'startswith', predicate: 'and', value: 'Submitted' }
+                        columns: [{ field: 'StateId', matchCase: false, operator: 'startswith', predicate: 'and', value: '1' }
 
                             ],},
                     width: "100%",
@@ -111,17 +114,22 @@
     
                     actionBegin: "begin",
                     columns: [
-                        { headerText: 'Open', template: "<a href='/Request/Detail/{{:RequestId}}'>Open</a>", width:"80" },
-                        { field: "RequestId", headerText: 'Request ID', isPrimaryKey: true, isIdentity: true, visible: false },
+                        { headerText: 'Open', template: "<a href='/Request/Detail/{{:EventId}}'>Open</a>", width:"80" },
+                        { field: "EventId", headerText: 'Request ID', isPrimaryKey: true, isIdentity: true, visible: false },
+                        { field: "Title", headerText: 'Title' },
+                        { field: "Description", headerText: 'Special Details', allowEditing: true, editType: "text", width:"140" },
                         { field: "RequesterEmail", headerText: 'RequesterEmail', allowEditing: true },
                         { field: "FilterID", headerText: 'Filter Type', foreignKeyField: "FilterID", foreignKeyValue: "filterType", dataSource: dataManagerFilterType, editType: "dropdownedit" },
-                        { field: "SizeID", headerText: 'FilterSize', foreignKeyField: "SizeID", foreignKeyValue: "filterSize", dataSource: dataManagerFilterSize, editType: "dropdownedit" },
+                        { field: "SizeID", headerText: 'Filter Size', foreignKeyField: "SizeID", foreignKeyValue: "filterSize", dataSource: dataManagerFilterSize, editType: "dropdownedit" },
+                           { field: "ControllerID", headerText: 'Controller Type', foreignKeyField: "ControllerID", foreignKeyValue: "controllerType", dataSource: dataManagerControllerType },
+                            { field: "LaboratoryId", headerText: 'Laboratory Name', allowEditing: true, foreignKeyField: "LaboratoryId", foreignKeyValue: "LaboratoryName", dataSource: dataManagerLaboratory },
+                            {field: "StateId", headerText: "Request State", foreignkeyField: "StateId", foreignKeyValue:"State", dataSource: dataManagerState, allowEditing: false, width: "100"},
                         { field: "Start", headerText: 'Order Date', editType: "datepicker", format: "{0:MM/dd/yyyy}" },
                         { field: "End", headerText: 'Delivery Date', editType: "datepicker", format: "{0:MM/dd/yyyy}" },
-                        { field: "ControllerID", headerText: 'Controller Type', foreignKeyField: "ControllerID", foreignKeyValue: "controllerType", dataSource: dataManagerControllerType },
-                        { field: "LaboratoryId", headerText: 'Laboratory Name', allowEditing: true, foreignKeyField: "LaboratoryId", foreignKeyValue: "LaboratoryName", dataSource: dataManagerLaboratory },
-                        { field: "SpecialDetails", headerText: 'Special Details', allowEditing: true, editType: "text", width:"140" },
-                        {field: "StateId", headerText: "Request State", foreignkeyField: "StateId", foreignKeyValue:"State", allowEditing: false, width: "100"},
+                     
+                       
+                        
+                        
             
                         
                     ],
@@ -157,5 +165,5 @@
 
 
 }
-{}
+
    

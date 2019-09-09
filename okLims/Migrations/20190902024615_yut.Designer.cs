@@ -10,8 +10,8 @@ using okLims.Data;
 namespace okLims.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190819015859_jj")]
-    partial class jj
+    [Migration("20190902024615_yut")]
+    partial class yut
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -202,11 +202,39 @@ namespace okLims.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("RequestFK");
+
                     b.Property<string>("controllerType");
 
                     b.HasKey("ControllerID");
 
                     b.ToTable("ControllerType");
+                });
+
+            modelBuilder.Entity("okLims.Models.Event", b =>
+                {
+                    b.Property<int>("EventId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("AllDay");
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired();
+
+                    b.Property<string>("End");
+
+                    b.Property<string>("Start");
+
+                    b.Property<string>("Title");
+
+                    b.HasKey("EventId");
+
+                    b.ToTable("Events");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Event");
                 });
 
             modelBuilder.Entity("okLims.Models.FilterSize", b =>
@@ -323,45 +351,6 @@ namespace okLims.Migrations
                     b.ToTable("NumberSequence");
                 });
 
-            modelBuilder.Entity("okLims.Models.Request", b =>
-                {
-                    b.Property<int>("EventId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ControllerID");
-
-                    b.Property<DateTime>("End");
-
-                    b.Property<int>("FilterID");
-
-                    b.Property<int>("LaboratoryId");
-
-                    b.Property<string>("RequesterEmail");
-
-                    b.Property<int>("SizeID");
-
-                    b.Property<string>("Description");
-
-                    b.Property<DateTime>("Start");
-
-                    b.Property<int>("StateId");
-
-                    b.HasKey("EventId");
-
-                    b.HasIndex("ControllerID");
-
-                    b.HasIndex("FilterID");
-
-                    b.HasIndex("LaboratoryId");
-
-                    b.HasIndex("SizeID");
-
-                    b.HasIndex("StateId");
-
-                    b.ToTable("Request");
-                });
-
             modelBuilder.Entity("okLims.Models.RequestLine", b =>
                 {
                     b.Property<int>("RequestLineId")
@@ -372,11 +361,13 @@ namespace okLims.Migrations
 
                     b.Property<string>("End");
 
+                    b.Property<int>("EventId");
+
                     b.Property<int>("FilterID");
 
                     b.Property<int>("LaboratoryId");
 
-                    b.Property<int>("EventId");
+                    b.Property<int?>("RequestEventId");
 
                     b.Property<string>("RequesterEmail");
 
@@ -389,6 +380,8 @@ namespace okLims.Migrations
                     b.HasKey("RequestLineId");
 
                     b.HasIndex("EventId");
+
+                    b.HasIndex("RequestEventId");
 
                     b.ToTable("RequestLine");
                 });
@@ -404,6 +397,37 @@ namespace okLims.Migrations
                     b.HasKey("StateId");
 
                     b.ToTable("RequestState");
+                });
+
+            modelBuilder.Entity("okLims.Models.Request", b =>
+                {
+                    b.HasBaseType("okLims.Models.Event");
+
+                    b.Property<int>("ControllerID");
+
+                    b.Property<int>("FilterID");
+
+                    b.Property<int>("LaboratoryId");
+
+                    b.Property<string>("RequesterEmail");
+
+                    b.Property<int>("SizeID");
+
+                    b.Property<int>("StateId");
+
+                    b.HasIndex("ControllerID");
+
+                    b.HasIndex("FilterID");
+
+                    b.HasIndex("LaboratoryId");
+
+                    b.HasIndex("SizeID");
+
+                    b.HasIndex("StateId");
+
+                    b.ToTable("Request");
+
+                    b.HasDiscriminator().HasValue("Request");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -459,10 +483,22 @@ namespace okLims.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("okLims.Models.RequestLine", b =>
+                {
+                    b.HasOne("okLims.Models.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("okLims.Models.Request")
+                        .WithMany("RequestLines")
+                        .HasForeignKey("RequestEventId");
+                });
+
             modelBuilder.Entity("okLims.Models.Request", b =>
                 {
                     b.HasOne("okLims.Models.ControllerType", "ControllerType")
-                        .WithMany()
+                        .WithMany("Requests")
                         .HasForeignKey("ControllerID")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -484,14 +520,6 @@ namespace okLims.Migrations
                     b.HasOne("okLims.Models.RequestState", "State")
                         .WithMany()
                         .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("okLims.Models.RequestLine", b =>
-                {
-                    b.HasOne("okLims.Models.Request", "Request")
-                        .WithMany("RequestLines")
-                        .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

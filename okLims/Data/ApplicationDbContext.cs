@@ -21,7 +21,7 @@ namespace okLims.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
-
+        public DbSet<Event> Event { get; set; }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
         public DbSet<NumberSequence> NumberSequence { get; set; }
         public DbSet<Request> Request { get; set; }

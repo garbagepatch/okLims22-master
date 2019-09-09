@@ -13,8 +13,7 @@ namespace okLims.Models
         [Key]
         public int SizeID { get; set; }
         public string filterSize { get; set; }
-        public int RequestFK { get; set; }
-    public ICollection<Request> Requests { get; set; }
+
     public static FilterSize[] GetFilterSizes()
     {
             FilterSize thirtykda = new FilterSize

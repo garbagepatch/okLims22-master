@@ -55,9 +55,9 @@ using System.Threading.Tasks;
         {
             List<Request> Items = await _context.Request.ToListAsync();
             int Count = Items.Count();
-            message = _DA.AddRequest(evt, out RequestId);
+            message = _DA.AddRequest(evt, out EventId);
 
-          return Json(new { message, RequestId });
+          return Json(new { message, EventId });
         }
         */
 /*        [HttpPost]
@@ -65,7 +65,7 @@ using System.Threading.Tasks;
         {
             string message = String.Empty;
 
-            message = _DA.DeleteRequest(evt.RequestId);
+            message = _DA.DeleteRequest(evt.EventId);
 
             return Json(new { message });
         }
@@ -73,7 +73,7 @@ using System.Threading.Tasks;
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorViewModel { EventId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 *///}

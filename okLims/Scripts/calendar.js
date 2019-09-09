@@ -1,10 +1,10 @@
-﻿let currentRequest;
+﻿let currentEvent;
 const formatDate = date => date === null ? '' : moment(date).format("MM/DD/YYYY h:mm A");
-const fpStart = flatpickr("#Start", {
+const fpStartTime = flatpickr("#StartTime", {
     enableTime: true,
     dateFormat: "m/d/Y h:i K"
 });
-const fpEnd = flatpickr("#End", {
+const fpEndTime = flatpickr("#EndTime", {
     enableTime: true,
     dateFormat: "m/d/Y h:i K"
 });
@@ -14,22 +14,25 @@ $('#calendar').fullCalendar({
     height: 'parent',
     header: {
         left: 'prev,next today',
-        center: 'requesterEmail',
+        center: 'title',
         right: 'month,agendaWeek,agendaDay'
     },
-    requestRender(request, $el) {
+    eventRender(event, $el) {
         $el.qtip({
             content: {
-                requesterEmail: request.RequesterEmail,
-                specialDetails: request.SpecialDetails,
-                filterID: request.FilterID,
-                sizeID: request.SizeID,
-                controllerID: request.ControllerID,
-                laboratoryId: request.LaboratoryId,
-                stateId: request.StateId,
+                title: event.title,
+                requesterEmail: event.requesterEmail,
+                text: event.description,
+                filterID: event.filterID,
+                sizeID: event.sizeID,
+                controllerID: event.controllerID,
+                laboratoryId: event.laboratoryId,
+
+                stateId: event.stateId
+
             },
             hide: {
-                request: 'unfocus'
+                event: 'unfocus'
             },
             show: {
                 solo: true
@@ -44,145 +47,158 @@ $('#calendar').fullCalendar({
             }
         });
     },
-    requests: 'api/RequestCalendar/GetCalendarRequests',
-    requestClick: updateRequest,
+    events: '/api/RequestCalendar/GetCalendarEvents',
+    eventClick: updateEvent,
     selectable: true,
-    select: addRequest
+    select: addEvent
 });
 
 /**
  * Calendar Methods
  **/
 
-function updateRequest(request, element) {
-    currentRequest = request;
+function updateEvent(event, element) {
+    currentEvent = event;
 
     if ($(this).data("qtip")) $(this).qtip("hide");
 
-    $('#requestModalLabel').html('Edit Request');
-    $('#requestModalSave').html('Update Request');
-    $('#RequestRequesterEmail').val(request.RequesterEmail);
-    $('#SpecialDetails').val(request.SpecialDetails);
-    $('#FilterType').val(request.FilterID);
-    $('#FilterSize').val(request.SizeID);
-    $('#ControllerType').val(request.ControllerID);
-    $('#LaboratoryName').val(request.LaboratoryId);
-    $('#State').val(request.StateId);
-    $('#isNewRequest').val(false);
+    $('#eventModalLabel').html('Edit Event');
+    $('#eventModalSave').html('Update Event');
+    $('#EventTitle').val(event.title);
+    $('#RequesterEmail').val(event.requesterEmail);
+    $('#Description').val(event.description);
+    $('#SizeID').val(event.sizeID);
+    $('#FilterID').val(event.filterID);
+    $('#ControllerID').val(event.controllerID);
+    $('#LaboratoryId').val(event.laboratoryId);
+    $('#StateId').val(event.stateId);
+    $('#isNewEvent').val(false);
 
-    const start = formatDate(request.Start);
-    const end = formatDate(request.End);
+    const start = formatDate(event.start);
+    const end = formatDate(event.end);
 
-    fpStart.setDate(start);
-    fpEnd.setDate(end);
+    fpStartTime.setDate(start);
+    fpEndTime.setDate(end);
 
-    $('#Start').val(start);
-    $('#End').val(end);
+    $('#StartTime').val(start);
+    $('#EndTime').val(end);
 
- 
+    if (event.allDay) {
+        $('#AllDay').prop('checked', 'checked');
+    } else {
+        $('#AllDay')[0].checked = false;
+    }
 
-    $('#requestModal').modal('show');
+    $('#eventModal').modal('show');
 }
 
-function addRequest(start, end) {
-    $('#requestForm')[0].reset();
+function addEvent(start, end) {
+    $('#eventForm')[0].reset();
 
-    $('#requestModalLabel').html('Add Request');
-    $('#requestModalSave').html('Create Request');
-    $('#isNewRequest').val(true);
+    $('#eventModalLabel').html('Add Event');
+    $('#eventModalSave').html('Create Event');
+    $('#isNewEvent').val(true);
 
     start = formatDate(start);
     end = formatDate(end);
 
-    fpStart.setDate(start);
-    fpEnd.setDate(end);
+    fpStartTime.setDate(start);
+    fpEndTime.setDate(end);
 
-    $('#requestModal').modal('show');
+    $('#eventModal').modal('show');
 }
 
 /**
  * Modal
  * */
 
-$('#requestModalSave').click(() => {
+$('#eventModalSave').click(() => {
+    const title = $('#EventTitle').val();
     const requesterEmail = $('#RequesterEmail').val();
-    const specialDetails = $('#SpecialDetails').val();
-    const start = moment($('#Start').val());
-    const end = moment($('#End').val());
+    const description = $('#Description').val();
     const filterID = $('#FilterID').val();
-    const sizeID = $('#SizeID').val();
-    const controllerID = $('#ControllerID').val();
+    const  sizeID = $('#SizeID').val();
+   const controllerID = $('#ControllerID').val();
     const laboratoryId = $('#LaboratoryId').val();
     const stateId = $('#StateId').val();
 
-    const isNewRequest = $('#isNewRequest').val() === 'true' ? true : false;
+    const isAllDay = $('#AllDay').is(":checked");
+    const startTime = moment($('#StartTime').val());
+    const endTime = moment($('#EndTime').val());
+    const isNewEvent = $('#isNewEvent').val() === 'true' ? true : false;
 
-    if (start > end) {
+    if (startTime > endTime) {
         alert('Start Time cannot be greater than End Time');
 
         return;
-    } else if ((!start.isValid() || !end.isValid()) ) {
+    } else if ((!startTime.isValid() || !endTime.isValid()) && !isAllDay) {
         alert('Please enter both Start Time and End Time');
 
         return;
     }
 
-    const request = {
+    const event = {
+        title,
         requesterEmail,
-        specialDetails,
+        description,
         filterID,
         sizeID,
         controllerID,
         laboratoryId,
         stateId,
-        start: start._i,
-        end: end._i
+        isAllDay,
+  
+        startTime: startTime._i,
+        endTime: endTime._i
     };
 
-    if (isNewRequest) {
-        sendAddRequest(request);
+    if (isNewEvent) {
+        sendAddEvent(event);
     } else {
-        sendUpdateRequest(request);
+        sendUpdateEvent(event);
     }
 });
 
-function sendAddRequest(request) {
+function sendAddEvent(event) {
     axios({
         method: 'post',
-        url: '/api/RequestCalendar/AddRequest',
+        url: '/api/RequestCalendar/AddEvent',
         data: {
-            "RequesterEmail": request.RequesterEmail,
-            "SpecialDetails": request.SpecialDetails,
-            "Start": request.Start,
-            "End": request.End,
-            "FilterType": request.FilterID,
-            "FilterSize": request.SizeID,
-            "ControllerType": request.ControllerID,
-            "LaboratoryName": request.LaboratoryId,
-            "State": request.StateId,
-
+            "Title": event.title,
+            "RequesterEmail": event.requesterEmail,
+            "Description": event.description,
+            "Start": event.startTime,
+            "End": event.endTime,
+            "AllDay": event.isAllDay,
+            "SizeID": event.filterID,
+            "FilterID": event.sizeID,
+            "ControllerID": event.controllerID,
+            "LaboratoryId": event.laboratoryId,
+            "StateId": event.stateId
         }
     })
         .then(res => {
-            const { message, RequestId } = res.data;
+            const { message, eventId } = res.data;
 
             if (message === '') {
-                const newRequest = {
-                    start: request.Start,
-                    end: request.End,                 
-                    requesterEmail: request.RequesterEmail,
-                    specialDetails: request.SpecialDetails,
-                    filterID: request.FilterID,
-                    sizeID: request.SizeID,
-                    controllerID: request.ControllerID,
-                    laboratoryId: request.LaboratoryId,
-                    RequestId
+                const newEvent = {
+                    start: event.startTime,
+                    end: event.endTime,
+                    allDay: event.isAllDay,
+                    title: event.title,
+                    description: event.description,
+                    filterID: event.filterID,
+                    sizeID: event.sizeID,
+                    controllerID: event.controllerID,
+                      laboratoryId: event.laboratoryId,
+                    requesterEmail: event.requesterEmail,
+                    eventId
                 };
 
-                $('#calendar').fullCalendar('renderRequest', newRequest);
+                $('#calendar').fullCalendar('renderEvent', newEvent);
                 $('#calendar').fullCalendar('unselect');
 
-                $('#requestModal').modal('hide');
+                $('#eventModal').modal('hide');
             } else {
                 alert(`Something went wrong: ${message}`);
             }
@@ -190,39 +206,42 @@ function sendAddRequest(request) {
         .catch(err => alert(`Something went wrong: ${err}`));
 }
 
-function sendUpdateRequest(request) {
+function sendUpdateEvent(event) {
     axios({
         method: 'post',
-        url: '/api/RequestCalendar/UpdateRequest',
+        url: '/api/RequestCalendar/UpdateEvent',
         data: {
-            "RequestId": currentRequest.RequestId,
-            "RequesterEmail": request.RequesterEmail,
-            "SpecialDetails": request.SpecialDetails,
-            "Start": request.Start,
-            "End": request.End,
-            "FilterType": request.FilterID,
-            "FilterSize": request.SizeID,
-            "ControllerType": request.ControllerID,
-            "LaboratoryName": request.LaboratoryId,
-  
+            "EventId": currentEvent.eventId,
+            "Title": currentEvent.title,
+            "RequesterEmail": event.requesterEmail,
+            "Description": event.description,
+            "SizeID": (event.sizeID),
+            "FilterID": (event.filterID),
+            "ControllerID": (event.controllerID),
+            "LaboratoryId": (event.laboratoryId),
+             "StateId": event.stateId,
+            "Start": event.startTime,
+            "End": event.endTime,
+            "AllDay": event.isAllDay
         }
     })
         .then(res => {
             const { message } = res.data;
 
             if (message === '') {
-                currentRequest.requesterEmail = request.RequesterEmail;
-                currentRequest.specialDetails = request.SpecialDetails;
-                currentRequest.start = request.Start;
-                currentRequest.end = request.End;
-                currentRequest.filterID = request.FilterID;
-                currentRequest.sizeID = request.SizeID;
-                currentRequest.controllerID = request.ControllerID;
-                currentRequest.laboratoryId = request.LaboratoryId;
-                currentRequest.stateId = request.StateId;
+                currentEvent.title = event.title;
+                currentEvent.description = event.description;
+                currentEvent.start = event.startTime;
+                currentEvent.end = event.endTime;
+                currentEvent.sizeID = event.sizeID;
+                currentEvent.filterID = event.filterID;
+                currentEvent.controllerID = event.controllerID;
+                currentEvent.laboratoryId = event.laboratoryId;
+                currentEvent.stateId = event.stateId;
+                currentEvent.allDay = event.isAllDay;
 
-                $('#calendar').fullCalendar('updateRequest', currentRequest);
-                $('#requestModal').modal('hide');
+                $('#calendar').fullCalendar('updateEvent', currentEvent);
+                $('#eventModal').modal('hide');
             } else {
                 alert(`Something went wrong: ${message}`);
             }
@@ -230,21 +249,21 @@ function sendUpdateRequest(request) {
         .catch(err => alert(`Something went wrong: ${err}`));
 }
 
-$('#deleteRequest').click(() => {
-    if (confirm(`Do you really want to delte "${currentRequest.requesterEmail}" request?`)) {
+$('#deleteEvent').click(() => {
+    if (confirm(`Do you really want to delte "${currentEvent.title}" event?`)) {
         axios({
             method: 'post',
-            url: '/api/RequestCalendar/DeleteRequest',
+            url: '/api/RequestCalendar/DeleteEvent',
             data: {
-                "RequestId": currentRequest.RequestId
+                "EventId": currentEvent.eventId
             }
         })
             .then(res => {
                 const { message } = res.data;
 
                 if (message === '') {
-                    $('#calendar').fullCalendar('removeRequests', currentRequest._id);
-                    $('#requestModal').modal('hide');
+                    $('#calendar').fullCalendar('removeEvents', currentEvent._id);
+                    $('#eventModal').modal('hide');
                 } else {
                     alert(`Something went wrong: ${message}`);
                 }
@@ -253,4 +272,16 @@ $('#deleteRequest').click(() => {
     }
 });
 
+$('#AllDay').on('change', function (e) {
+    if (e.target.checked) {
+        $('#EndTime').val('');
+        fpEndTime.clear();
+        this.checked = true;
+    } else {
+        this.checked = false;
+    }
+});
 
+$('#EndTime').on('change', () => {
+    $('#AllDay')[0].checked = false;
+});

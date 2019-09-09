@@ -10,8 +10,8 @@ using okLims.Data;
 namespace okLims.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190819015859_jj")]
-    partial class jj
+    [Migration("20190902001913_tit")]
+    partial class tit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -202,6 +202,8 @@ namespace okLims.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("RequestFK");
+
                     b.Property<string>("controllerType");
 
                     b.HasKey("ControllerID");
@@ -209,11 +211,34 @@ namespace okLims.Migrations
                     b.ToTable("ControllerType");
                 });
 
+            modelBuilder.Entity("okLims.Models.Events", b =>
+                {
+                    b.Property<int>("EventId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("AllDay");
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("End");
+
+                    b.Property<string>("Start");
+
+                    b.Property<string>("Title");
+
+                    b.HasKey("EventId");
+
+                    b.ToTable("Events");
+                });
+
             modelBuilder.Entity("okLims.Models.FilterSize", b =>
                 {
                     b.Property<int>("SizeID")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("RequestFK");
 
                     b.Property<string>("filterSize");
 
@@ -227,6 +252,8 @@ namespace okLims.Migrations
                     b.Property<int>("FilterID")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("RequestFK");
 
                     b.Property<string>("filterType");
 
@@ -296,6 +323,8 @@ namespace okLims.Migrations
 
                     b.Property<string>("LaboratoryName");
 
+                    b.Property<int>("RequestFK");
+
                     b.HasKey("LaboratoryId");
 
                     b.ToTable("Laboratory");
@@ -337,6 +366,8 @@ namespace okLims.Migrations
 
                     b.Property<int>("LaboratoryId");
 
+                    b.Property<int?>("RequestFK");
+
                     b.Property<string>("RequesterEmail");
 
                     b.Property<int>("SizeID");
@@ -354,6 +385,8 @@ namespace okLims.Migrations
                     b.HasIndex("FilterID");
 
                     b.HasIndex("LaboratoryId");
+
+                    b.HasIndex("RequestFK");
 
                     b.HasIndex("SizeID");
 
@@ -398,6 +431,8 @@ namespace okLims.Migrations
                     b.Property<int>("StateId")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("RequestFK");
 
                     b.Property<string>("State");
 
@@ -462,22 +497,26 @@ namespace okLims.Migrations
             modelBuilder.Entity("okLims.Models.Request", b =>
                 {
                     b.HasOne("okLims.Models.ControllerType", "ControllerType")
-                        .WithMany()
+                        .WithMany("Requests")
                         .HasForeignKey("ControllerID")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("okLims.Models.FilterType", "FilterType")
-                        .WithMany()
+                        .WithMany("Requests")
                         .HasForeignKey("FilterID")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("okLims.Models.Laboratory", "Laboratory")
-                        .WithMany()
+                        .WithMany("Requests")
                         .HasForeignKey("LaboratoryId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("okLims.Models.RequestState")
+                        .WithMany("Requests")
+                        .HasForeignKey("RequestFK");
+
                     b.HasOne("okLims.Models.FilterSize", "FilterSize")
-                        .WithMany()
+                        .WithMany("Requests")
                         .HasForeignKey("SizeID")
                         .OnDelete(DeleteBehavior.Cascade);
 

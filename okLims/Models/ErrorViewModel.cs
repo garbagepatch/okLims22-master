@@ -4,8 +4,8 @@ namespace okLims.Models
 {
     public class ErrorViewModel
     {
-        public string RequestId { get; set; }
+        public string EventId { get; set; }
 
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+        public bool ShowEventId => !string.IsNullOrEmpty(EventId);
     }
 }

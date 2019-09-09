@@ -13,14 +13,14 @@ namespace okLims.Areas.Identity.Pages
     [AllowAnonymous]
     public class ErrorModel : PageModel
     {
-        public string RequestId { get; set; }
+        public string EventId { get; set; }
 
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
+        public bool ShowEventId => !string.IsNullOrEmpty(EventId);
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public void OnGet()
         {
-            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+            EventId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
         }
     }
 }

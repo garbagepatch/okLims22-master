@@ -12,9 +12,7 @@ namespace okLims.Models
         [Key]
         public int StateId { get; set; }
         public string State { get; set; }
-        public int RequestFK { get; set; }
-        [ForeignKey("RequestFK")]
-        public ICollection<Request> Requests { get; set; }
+
         IList<RequestState> states = new List<RequestState>
             {
                 new RequestState(){StateId = 0, State= "Submitted"},
