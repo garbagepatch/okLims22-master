@@ -1,119 +1,73 @@
 ﻿@{
     ViewData["Title"] = "Instrument";
-}
-<!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
 
-    <!-- Main content -->
-    <section class="content">
-        <!-- Default box -->
-        <div class="box">
-            <div class="box-header with-border">
-                <h3 class="box-title text-primary"><i class="fa fa-gear"></i> @ViewData["Title"]</h3>
-                <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
-                            title="Collapse">
-                        <i class="fa fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
-                        <i class="fa fa-times"></i>
-                    </button>
+}
+@{
+    List<object> toolbarItems = new List<object>();
+    toolbarItems.Add("Add");
+    toolbarItems.Add("Edit");
+    toolbarItems.Add("Delete");
+    toolbarItems.Add("Update");
+    toolbarItems.Add("Cancel");
+    toolbarItems.Add(new { text = "Click", tooltipText = "Click", prefixIcon = "e-expand", id = "Click" });
+}
+@model Instrument
+    <body>
+        <div class="content-wrapper">
+
+            <!-- Main content -->
+            <section class="content">
+                <!-- Default box -->
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title text-primary"><i class="fa fa-certificate"></i> @ViewData["Title"]</h3>
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                                    title="Collapse">
+                                <i class="fa fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+                                <i class="fa fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <ejs-grid id="Grid" allowExcelExport="true" allowResizing="true" allowFiltering="true" allowSelection="true" allowPaging="true" toolbarClick="toolbarClick" toolbar=toolbarItems>
+                            <e-data-manager adaptor="WebApiAdaptor" insertUrl="/api/Instruments/Insert" updateUrl="/api/Instruments/Update" removeUrl="/api/Instruments/Remove" crossDomain="true"></e-data-manager>
+                            <e-grid-editSettings allowAdding="true" allowDeleting="true" allowEditing="true" mode="Dialog" allowEditOnDblClick="true"></e-grid-editSettings>
+                            <e-grid-columns>
+                                <e-grid-column field="InstrumentId" headerText="Instrument ID" isPrimaryKey="true" width="50" isIdentity="true" visible="false"></e-grid-column>
+                                <e-grid-column field="InstrumentName" headerText="Instrument Name"></e-grid-column>
+                                <e-grid-column field="MaintenanceDate" headerText="Last Maintenance" editType="datepickeredit"></e-grid-column>
+                                <e-grid-column field="MaintenanceInterval" headerText="Maintence Length (months)" editType="numericedit"></e-grid-column>
+                                <e-grid-column field="CalibrationDate" headerText="Calibration Date" editType="datepickeredit"></e-grid-column>
+                                <e-grid-column field="CalibrationLength" headerText="Calibration Length(months)" editType="numericedit"></e-grid-column>
+                                <e-grid-column field="CalibrationDue" headerText="Calibration Due" allowEditing="false"></e-grid-column>
+                            </e-grid-columns>
+
+                        </ejs-grid>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer">
+
+                    </div>
+                    <!-- /.box-footer-->
                 </div>
-            </div>
-            <div class="box-body">
-                <div id="Grid"></div>
-            </div>
-            <!-- /.box-body -->
-            <div class="box-footer">
-
-            </div>
-            <!-- /.box-footer-->
+                <!-- /.box -->
+            </section>
+            <!-- /.content -->
         </div>
-        <!-- /.box -->
-    </section>
-    <!-- /.content -->
-</div>
-<!-- /.content-wrapper -->
-
-@section Styles{
-
-}
-
-@section Scripts{
-
-    <script type="text/javascript">$(function () {
-
-            var dataManager = ej.DataManager({
-                url: "/api/Instrument",
-                adaptor: new ej.WebApiAdaptor(),
-                offline: true
-            });
-
-            dataManager.ready.done(function (e) {
-                $("#Grid").ejGrid({
-                    dataSource: ej.DataManager({
-                        json: e.result,
-                        adaptor: new ej.remoteSaveAdaptor(),
-                        insertUrl: "/api/Instrument/Insert",
-                        updateUrl: "/api/Instrument/Update",
-                        removeUrl: "/api/Instrument/Remove",
-                    }),
-                    toolbarSettings: {
-                        showToolbar: true,
-                        toolbarItems: ["add", "edit", "delete", "update", "cancel", "search", "printGrid"]
-                    },
-                    editSettings: {
-                        allowEditing: true,
-                        allowAdding: true,
-                        allowDeleting: true,
-                        showDeleteConfirmDialog: true,
-                        editMode: "dialog"
-                    },
-                    isResponsive: true,
-                    enableResponsiveRow: true,
-                    allowSorting: true,
-                    allowSearching: true,
-                    allowFiltering: true,
-                    filterSettings: {
-                        filterType: "excel",
-                        maxFilterChoices: 100,
-                        enableCaseSensitivity: false
-                    },
-                    allowPaging: true,
-                    pageSettings: { pageSize: 10, printMode: ej.Grid.PrintMode.CurrentPage },
-                    columns: [
-                        { field: "InstrumentId", headerText: 'Instrument Id', isPrimaryKey: true, isIdentity: true, visible: false },
-                        { field: "InstrumentName", headerText: 'Instrument Name', editType: "textedit"},
-                        { field: "CalibrationDate", headerText: 'Calibration Date', editType: "datepickeredit", allowEditing: "true", },
-                        { field: "CalibrationLength", headerText: 'Calibration Length (mo)', editType: "numericedit" },
-                        {field: "CalibrationDue", headerText: 'Calibration Due', allowEditing: false},
-                        { field: "MaintenanceDate", headerText: 'Maintenance Date', editType: "datepickeredit", allowEditing: true },
-                        { field: "MaintenanceInterval", headerText: 'Maintenance Interval', editType: "datepickeredit", format: "M" ,allowEditing:true },
-                        {field: "MaintenanceDue", headerText: 'Maintenance Due', allowEditing: false},
-                         
-
-                    ],
-                    actionComplete: "complete",
-                     queryCellInfo: "calculate",
-                });
-            });
-
-
-        });
-
-        function complete(args) {
-            if (args.requestType == 'beginedit') {
-                $("#" + this._id + "_dialogEdit").ejDialog({ title: "Edit Record" });
-
-            }
+    </body>
+<script>
+    function toolbarClick(args) {
+        if (args.item.id === 'Click') {
+            alert("Custom toolbar click...");
         }
-        function calculate(args) {
-            if (args.column.headerText == "CalibrationDue") {
-                $(args.cell).text(args.data.CalibrationDate + DateTime(0, args.data.CalibrationLength, 0))
-            } else if (args.column.headerText == "MaintenanceDue") {
-                $(args.cell).text(args.data.MaintenanceDate + DateTime(0, args.data.MaintenanceInterval, 0))
-            }
-        };
-        
-    </script>
-}
+    }
+</script>
+
+<style>
+    .e-expand::before {
+        content: '\e5b8';
+    }
+</style>

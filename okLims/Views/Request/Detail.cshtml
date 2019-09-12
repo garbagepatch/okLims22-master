@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Request Detail";
-
+  
 }
 
 <!-- Content Wrapper. Contains page content -->
@@ -28,70 +28,75 @@
 
                 <dl>
                     <dt>@Html.DisplayNameFor(model => model.RequestId)</dt>
-                    <dd>@Html.DisplayFor(item => item.RequestId)</dd>
-                    <dt> @Html.DisplayNameFor(model => model.FilterType)</dt>
-                    <dd>@Html.DisplayFor(item => item.FilterID)</dd>
+                    <dd>@Html.DisplayFor(model => model.RequestId)</dd>
+                    <dt> @Html.DisplayNameFor(model => model.FilterSize)</dt>
+                    <dd>@Html.DisplayFor(item => item.FilterSize)</dd>
                     <dt>
                         @Html.DisplayNameFor(model => model.ControllerType)
                     </dt>
 
                     <dd>
-                        @Html.DisplayFor(item => item.ControllerID)
+                        @Html.DisplayFor(item =>item.ControllerType)
                     </dd>
                     <dt>
-                        @Html.DisplayNameFor(model => model.FilterSize)
+                        @Html.DisplayNameFor(model => model.FilterType)
                     </dt>
 
                     <dd>
-                        @Html.DisplayFor(item => item.SizeID)
+                        @Html.DisplayFor(item => item.FilterType)
                     </dd>
                     <dt>
                         @Html.DisplayNameFor(model => model.Laboratory)
                     </dt>
 
                     <dd>
-                        @Html.DisplayFor(item => item.LaboratoryId).ToString()
+                        @Html.DisplayFor(item => item.Laboratory).ToString()
                     </dd>
                     <dt>
                         @Html.DisplayNameFor(model => model.Start)
                     </dt>
-                    <dd> @Html.DisplayFor(model => model.Start)   </dd>
-                    <dt>@Html.DisplayNameFor(model => model.RequesterEmail)</dt>             
-                    <dd>@Html.DisplayFor(model => model.RequesterEmail)</dd>
+                    <dd>
+                        @Html.DisplayFor(model => model.Start)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.RequesterEmail)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.RequesterEmail)
+                    </dd>
                     <dt>
                         @Html.DisplayNameFor(model => model.End)
                     </dt>
                     <dd>
                         @Html.DisplayFor(model => model.End)
                     </dd>
+
+
                     <dt>
-                        @Html.DisplayNameFor(model => model.AllDay)
+                        @Html.DisplayNameFor(model => model.SpecialDetails)
                     </dt>
                     <dd>
-                        @Html.DisplayFor(model => model.AllDay)
-                    </dd>
-                    <dt>
-                        @Html.DisplayNameFor(model => model.Description)
-                    </dt>
-                    <dd>
-                        <textarea class="form-control" rows="3"> @Html.DisplayFor(model => model.Description)</textarea>
+                        <textarea class="form-control" rows="3"> @Html.DisplayFor(model => model.SpecialDetails)</textarea>
 
                     </dd>
                     <dt>
                         @Html.DisplayNameFor(model => model.State)
                     </dt>
-            
                     <dd>
-                        <input type="text" id="StateId"  formmethod="get"/>
+                     <form method="get">
+                        @Model.StateId
+                   
+                                                               )
+                     </form>
+                         
+                      
                     </dd>
-
-
                 </dl>
             </div>
             <div class="box-footer">
 
                 <form method="post">
-                    <button asp-route="api/Request/Update">Complete</button>
+                   <button asp-route="api/Request/insert">Complete</button> 
                 </form>
             </div>
 
@@ -112,24 +117,6 @@
 
 @section Styles{
 
-}
-@section Scripts{
-    <script type="text/javascript">
-        $(function () {
-
-            var dataManager = ej.DataManager({
-                url: "/api/RequestLine",
-                adaptor: new ej.WebApiAdaptor(),
-                headers: [{ "RequestId": @Model.RequestId}],
-                offline: true
-            });
-
-            var dataManagerState = ej.DataManager({
-                url: "/api/RequestState",
-                adaptor: new ej.WebApiAdaptor()
-            });
-
- </script>        
 }
 
 
