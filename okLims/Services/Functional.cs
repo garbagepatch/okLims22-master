@@ -92,6 +92,7 @@ namespace okLims.Services
             await _context.SaveChangesAsync();
             await _context.ApplicationUser.AddAsync(new ApplicationUser { Email = "crossmedders@gmail.com", Password = "qzpm1056", FirstName = "Cross", LastName = "Medders" });
             await _context.SaveChangesAsync();
+                await _context.Request.AddAsync(new Request { ControllerID= 1, RequestId=1, FilterID=1, SizeID=1, RequesterEmail="crossmedders@gmail.com", LaboratoryId=1, StateId=0,  })
         }
 
 

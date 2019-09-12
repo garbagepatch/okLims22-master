@@ -13,10 +13,16 @@ namespace okLims.Models
 
    
 
-    public class Request: Event
+    public class Request
     {
-       
-       
+        [Key]
+        public int RequestId { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
+        public bool AllDay { get; set; }
+
         public int ControllerID { get; set; }
        
         public int SizeID { get; set; }

@@ -24,28 +24,28 @@ public class RequestLineController : Controller
     [HttpGet]
     public async Task<IActionResult> GetRequestLine()
     {
-        var headers = Request.Headers["EventId"];
-        int EventId = Convert.ToInt32(headers);
+        var headers = Request.Headers["RequestId"];
+        int RequestId = Convert.ToInt32(headers);
         List<RequestLine> Items = await _context.RequestLine
-            .Where(x => x.EventId.Equals(EventId))
+            .Where(x => x.RequestId.Equals(RequestId))
             .ToListAsync();
         int Count = Items.Count();
         return Ok(new { Items, Count });
     }
 
-    private void UpdateRequest (int EventId)
+    private void UpdateRequest (int RequestId)
     {
         try
         {
             Request  Request  = new Request ();
             Request  = _context.Request 
-                .Where(x => x.EventId.Equals(EventId))
+                .Where(x => x.RequestId.Equals(RequestId))
                 .FirstOrDefault();
 
             if (Request  != null)
             {
                 List<RequestLine> lines = new List<RequestLine>();
-                lines = _context.RequestLine.Where(x => x.EventId.Equals(EventId)).ToList();
+                lines = _context.RequestLine.Where(x => x.RequestId.Equals(RequestId)).ToList();
 
       
 
@@ -68,7 +68,7 @@ public class RequestLineController : Controller
       
         _context.RequestLine.Add(RequestLine);
         _context.SaveChanges();
-        this.UpdateRequest (RequestLine.EventId);
+        this.UpdateRequest (RequestLine.RequestId);
         return Ok(RequestLine);
     }
 
@@ -79,7 +79,7 @@ public class RequestLineController : Controller
       
         _context.RequestLine.Update(RequestLine);
         _context.SaveChanges();
-        this.UpdateRequest (RequestLine.EventId);
+        this.UpdateRequest (RequestLine.RequestId);
         return Ok(RequestLine);
     }
 
@@ -91,7 +91,7 @@ public class RequestLineController : Controller
             .FirstOrDefault();
         _context.RequestLine.Remove(RequestLine);
         _context.SaveChanges();
-        this.UpdateRequest (RequestLine.EventId);
+        this.UpdateRequest (RequestLine.RequestId);
         return Ok(RequestLine);
 
     }

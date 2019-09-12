@@ -22,10 +22,6 @@
     <Compile Remove="Migrations\20190708182659_yoobly.Designer.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Remove="compilerconfig.json" />
-  </ItemGroup>
-
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.12" />
@@ -42,7 +38,9 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="Sendgrid" Version="9.9.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc2" />
-    <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="17.1.0.53" />
+    <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="17.2.0.51" />
+    <PackageReference Include="Syncfusion.EJ2.JavaScript" Version="17.2.0.51" />
+    <PackageReference Include="Syncfusion.Licensing" Version="17.2.0.51" />
   </ItemGroup>
 
   <ItemGroup>
@@ -54,10 +52,6 @@
   <ItemGroup>
     <Folder Include="Areas\Identity\Services\" />
     <Folder Include="NewFolder\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="compilerconfig.json" />
   </ItemGroup>
 
 </Project>

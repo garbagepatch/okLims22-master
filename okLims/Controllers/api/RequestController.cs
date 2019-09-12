@@ -18,7 +18,7 @@ namespace okLims.Controllers.api
     [Authorize]
     [Produces("application/json")]
     [Route("api/Request")]
-    [Table("Event")]
+    [Table("Request")]
     public class RequestController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -35,46 +35,42 @@ namespace okLims.Controllers.api
 
         }
         // GET: api/Request
+        // GET: api/Request
         [HttpGet]
-        
         public async Task<IActionResult> GetRequest()
         {
-            List<Request> Items = await _context.Request
-             
-                .ToListAsync();
-            
+            List<Request> Items = await _context.Request.ToListAsync();
             int Count = Items.Count();
 
             return Ok(new { Items, Count });
         }
-    
+
 
         [HttpGet("[action]/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-                Request result = await _context.Request
-                    .Where(x => x.EventId.Equals(id))
-                    .Include(x => x.RequestLines)
-                   
-                    .FirstOrDefaultAsync();
-                return Ok(result);
-            }
+            Request result = await _context.Request
+                .Where(x => x.RequestId.Equals(id))
+                .Include(x => x.RequestLines)
+                .FirstOrDefaultAsync();
+            return Ok(result);
+        }
 
-        private void UpdateRequest(int EventId)
+        private void UpdateRequest(int RequestId)
         {
             try
             {
                 Request Request = new Request();
                 Request = _context.Request
-                    .Where(x => x.EventId.Equals(EventId))
+                    .Where(x => x.RequestId.Equals(RequestId))
                     .FirstOrDefault();
-                if (Request != null )
+                if (Request != null)
                 {
                     List<RequestLine> lines = new List<RequestLine>();
-                    lines = _context.RequestLine.Where(x => x.EventId.Equals(EventId)).ToList();
+                    lines = _context.RequestLine.Where(x => x.RequestId.Equals(RequestId)).ToList();
                     //update master data by its lines                                       
                     _context.Update(Request);
-                         _context.SaveChanges();
+                    _context.SaveChanges();
                 }
             }
             catch (Exception)
@@ -82,13 +78,13 @@ namespace okLims.Controllers.api
                 throw;
             }
         }
-        public void CompleteRequest(int EventId)
+        public void CompleteRequest(int RequestId)
         {
             try
             {
                 Request request = new Request();
                 request = _context.Request
-                    .Where(x => x.EventId.Equals(EventId))
+                    .Where(x => x.RequestId.Equals(RequestId))
                     .FirstOrDefault();
                 if(request !=null)
                 {
@@ -109,8 +105,8 @@ namespace okLims.Controllers.api
             _context.SaveChanges();
             await _emailSender.SendEmailAsync(Request.RequesterEmail, "Order Received", "thank you");
         
-            this.UpdateRequest(Request.EventId);
-            
+            this.UpdateRequest(Request.RequestId);
+           
             return Ok(Request);
         }
         [AllowAnonymous]
@@ -122,7 +118,7 @@ namespace okLims.Controllers.api
             _context.SaveChanges();
             await _emailSender.SendEmailAsync(request.RequesterEmail, "Order Received", "thank you");
 
-            this.UpdateRequest(request.EventId);
+            this.UpdateRequest(request.RequestId);
 
             return Ok(request);
 
@@ -146,12 +142,12 @@ namespace okLims.Controllers.api
              _context.Request.Update(request);
         if (request.StateId == 3)
             {
-                this.CompleteRequest(request.EventId);
+                this.CompleteRequest(request.RequestId);
                 _context.SaveChanges();
                 return Ok(request);
             }
                 _context.SaveChanges();
-                return Ok(Request);
+                return Ok(request);
             
        
         }
@@ -160,7 +156,7 @@ namespace okLims.Controllers.api
         public IActionResult Remove([FromBody]CrudViewModel<Request> payload)
         {
             Request Request = _context.Request
-                .Where(x => x.EventId == (int)payload.key)
+                .Where(x => x.RequestId == (int)payload.key)
                      .FirstOrDefault();
         
             _context.Request.Remove(Request);

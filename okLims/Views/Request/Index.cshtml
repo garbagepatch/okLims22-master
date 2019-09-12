@@ -2,7 +2,7 @@
     ViewData["Title"] = "Request";
 
 }
-@model  Event
+@model  Request
 
 
 <div class="content-wrapper">
@@ -102,36 +102,33 @@
                     enableResponsiveRow: true,
                     allowSorting: true,
                     allowSearching: true,
-                                        allowFiltering: true,
+                    allowFiltering: true,
                     filterSettings: {
-                        columns: [{ field: 'StateId', matchCase: false, operator: 'startswith', predicate: 'and', value: '1' }
+                        columns: [{ field: 'StateId', matchCase: false, operator: 'startswith', predicate: 'and', value: '0' }
 
-                            ],},
+                        ],
+                    },
                     width: "100%",
                     allowPaging: true,
                     allowResizing: true,
                     pageSettings: { pageSize: 10, printMode: ej.Grid.PrintMode.CurrentPage },
-    
+
                     actionBegin: "begin",
                     columns: [
-                        { headerText: 'Open', template: "<a href='/Request/Detail/{{:EventId}}'>Open</a>", width:"80" },
-                        { field: "EventId", headerText: 'Request ID', isPrimaryKey: true, isIdentity: true, visible: false },
-                        { field: "Title", headerText: 'Title' },
-                        { field: "Description", headerText: 'Special Details', allowEditing: true, editType: "text", width:"140" },
+                        { headerText: 'Open', template: "<a href='/Request/Detail/{{:RequestId}}'>Open</a>", width: "80" },
+                        { field: "RequestId", headerText: 'Request ID', isPrimaryKey: true, isIdentity: true, visible: false },
+                        { field: "Description", headerText: 'Special Details', allowEditing: true, editType: "text", width: "140" },
                         { field: "RequesterEmail", headerText: 'RequesterEmail', allowEditing: true },
                         { field: "FilterID", headerText: 'Filter Type', foreignKeyField: "FilterID", foreignKeyValue: "filterType", dataSource: dataManagerFilterType, editType: "dropdownedit" },
                         { field: "SizeID", headerText: 'Filter Size', foreignKeyField: "SizeID", foreignKeyValue: "filterSize", dataSource: dataManagerFilterSize, editType: "dropdownedit" },
-                           { field: "ControllerID", headerText: 'Controller Type', foreignKeyField: "ControllerID", foreignKeyValue: "controllerType", dataSource: dataManagerControllerType },
-                            { field: "LaboratoryId", headerText: 'Laboratory Name', allowEditing: true, foreignKeyField: "LaboratoryId", foreignKeyValue: "LaboratoryName", dataSource: dataManagerLaboratory },
-                            {field: "StateId", headerText: "Request State", foreignkeyField: "StateId", foreignKeyValue:"State", dataSource: dataManagerState, allowEditing: false, width: "100"},
+                        { field: "ControllerID", headerText: 'Controller Type', foreignKeyField: "ControllerID", foreignKeyValue: "controllerType", dataSource: dataManagerControllerType, editType: "dropdownedit" },
+                        { field: "LaboratoryId", headerText: 'Laboratory Name', allowEditing: true, foreignKeyField: "LaboratoryId", foreignKeyValue: "LaboratoryName", dataSource: dataManagerLaboratory, editType: "dropdownedit" },
+                        { field: "StateId", headerText: "Request State", foreignkeyField: "StateId", foreignKeyValue: "State", dataSource: dataManagerState, allowEditing: false, width: "50" },
                         { field: "Start", headerText: 'Order Date', editType: "datepicker", format: "{0:MM/dd/yyyy}" },
                         { field: "End", headerText: 'Delivery Date', editType: "datepicker", format: "{0:MM/dd/yyyy}" },
-                     
-                       
-                        
-                        
-            
-                        
+                        { field: "Title", visible: false },
+                        { field: "AllDay", visible: false },
+                           
                     ],
                     actionComplete: "complete",
            
@@ -143,9 +140,7 @@
        
         function complete(args) {
             if (args.requestType == 'beginedit') {
-                if (args.rowData.State == "Complete") {
-                    args.cancel = true
-                }else
+        
                 $("#" + this._id + "_dialogEdit").ejDialog({ title: "Edit Record" });
             }
         };

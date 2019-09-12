@@ -20,246 +20,95 @@ namespace okLims.Controllers.api
     [Authorize]
     [Produces("application/json")]
     [Route("api/RequestCalendar")]
-    public class RequestCalendar : Controller
+    public class RequestCalendarController: Controller
     {
-      private readonly  ApplicationDbContext db;
-        private readonly IEmailSender _emailSender;
-
-        public RequestCalendar(ApplicationDbContext _db, IEmailSender emailSender)
+        ApplicationDbContext db;
+       public RequestCalendarController ( ApplicationDbContext _db)
         {
             db = _db;
-            _emailSender = emailSender;
         }
         [HttpGet]
-        public async Task<IActionResult> GetCalendarEvents()
+        public IActionResult LoadData()  // Here we get the Start and End Date and based on that can filter the data and return to Scheduler
         {
-            List<Request> Items = await db.Request
-
-          .ToListAsync();
-
-            int Count = Items.Count();
-
-            return Ok(new { Items, Count });
-        }
-
-    
-    [HttpGet("[action]")]
-        public async Task <IActionResult> GetCalendarEvents(string start, string end)
-        {
-            Request events = await db.Request
-                .Where(s => s.Start == start)
-                .Where(e => e.End == end)
-                  .FirstOrDefaultAsync();
-
-            return Ok(events);
+            var data = db.Request.ToList();
+            return Ok(data);
         }
         [HttpPost("[action]")]
-        public  IActionResult UpdateEvent([FromBody] CrudViewModel<Request> payload)
+        public IActionResult UpdateData(EditParams param)
         {
-            Request request = payload.value;
-            db.Update(request);
-            db.SaveChanges();
-            return Ok(request);
-        }
-
-        [HttpPost("[action]")]
-        public async Task<IActionResult> AddEvent([FromBody] CrudViewModel<Request> payload)
-        {
-            Request Request = payload.value;
-            db.Request.Add(Request);
-           db.SaveChanges();
-            await _emailSender.SendEmailAsync(Request.RequesterEmail, "Order Received", "thank you");
-
-            this.UpdateEvents(Request.EventId);
-
-            return Ok(Request); 
-
-      
-        }
-
-     
-
-        [HttpPost("[action]")]
-        public IActionResult DeleteEvent([FromBody]CrudViewModel<Request> payload)
-        {
-            Request Request = db.Request
-                .Where(x => x.EventId == (int)payload.key)
-                     .FirstOrDefault();
-
-            db.Request.Remove(Request);
-
-            db.SaveChanges();
-            return Ok(Request);
-        }
-
-
-
-        private SqlConnection GetConnection()
-        {
-            SqlConnection conn = new SqlConnection("Server=(localdb)\\MSSQLLocalDB;Initial Catalog=aspnet-okLims5-10F86EC1-A7B9-40B3-A943-2C9C114B0BDE;MultipleActiveResultSets=False;TrustServerCertificate=False;Connection Timeout=30;");
-            conn.Open();
-
-            return conn;
-        }
-       
-
-        private void CloseConnection(SqlConnection conn)
-        {
-            conn.Close();
-        }
-
-        public List<Event> GetCalendarEvent(string start, string end)
-        {
-            List<Event> events = new List<Event>();
-
-            using (SqlConnection conn = GetConnection())
+            if (param.action == "insert" || (param.action == "batch" && param.added != null)) // this block of code will execute while inserting the appointments
             {
-                using (SqlCommand cmd = new SqlCommand(@"select
-                                                            event_id
-                                                            ,title
-                                                            ,[description]
-                                                            ,event_start
-                                                            ,event_end
-                                                            ,all_day
-                                                        from
-                                                            [Events]
-                                                        where
-                                                            event_start between @start and @end", conn)
+                var value = (param.action == "insert") ? param.value : param.added[0];
+                int intMax = db.Request.Select(x => x.RequestId).DefaultIfEmpty(0).Max();
+                DateTime startTime = (value.Start);
+                DateTime endTime = (value.End);
+                Request appointment = new Request()
                 {
-                    CommandType = CommandType.Text
-                })
+                    RequestId = intMax + 1,
+                    Start = startTime,
+                    End = endTime,
+                 Title = value.Title,
+                 AllDay = value.AllDay,
+                 Description = value.Description,
+                 FilterID = value.FilterID,
+                 SizeID = value.SizeID,
+                 LaboratoryId = value.LaboratoryId
+                };
+                db.Request.Add(appointment);
+                db.SaveChanges();
+            }
+            if (param.action == "update" || (param.action == "batch" && param.changed != null)) // this block of code will execute while updating the appointment
+            {
+                var value = (param.action == "update") ? param.value : param.changed[0];
+                var filterData = db.Request.Where(c => c.RequestId == (value.RequestId));
+                if (filterData.Count() > 0)
                 {
-                    cmd.Parameters.Add("@start", SqlDbType.VarChar).Value = start;
-                    cmd.Parameters.Add("@end", SqlDbType.VarChar).Value = end;
+                    DateTime startTime = (value.Start);
+                    DateTime endTime = (value.End);
+                      Request appointment = db.Request.Single(A => A.RequestId ==(value.RequestId));
+                    appointment.Start = startTime;
+                    appointment.End = endTime;
+                    appointment.AllDay = value.AllDay;
+                    appointment.Title = value.Title;
+                    appointment.Description = value.Description;
+                 appointment.FilterID = value.FilterID;
+                    appointment.SizeID = value.SizeID;
+                    appointment.LaboratoryId = value.LaboratoryId;
 
-                    using (SqlDataReader dr = cmd.ExecuteReader())
+
+                }
+                db.SaveChanges();
+            }
+            if (param.action == "remove" || (param.action == "batch" && param.deleted != null)) // this block of code will execute while removing the appointment
+            {
+                if (param.action == "remove")
+                {
+                    int key = Convert.ToInt32(param.key);
+                   Request appointment = db.Request.Where(c => c.RequestId == key).FirstOrDefault();
+                    if (appointment != null) db.Request.Remove(appointment);
+                }
+                else
+                {
+                    foreach (var apps in param.deleted)
                     {
-                        while (dr.Read())
-                        {
-                            events.Add(new Request()
-                            {
-                                EventId = Convert.ToInt32(dr["event_id"]),
-                                Title = Convert.ToString(dr["title"]),
-                                Description = Convert.ToString(dr["description"]),
-                                Start = Convert.ToString(dr["event_start"]),
-                                End = Convert.ToString(dr["event_end"])
-                               
-                            });
-                        }
-                    }
+                        Request appointment = db.Request.Where(c => c.RequestId == apps.RequestId).FirstOrDefault();
+                        if (apps != null) db.Request.Remove(appointment);
+                    }   
                 }
+                db.SaveChanges();
             }
-
-            return events;
+            var data = db.Request.ToList();
+            return Ok(data);
         }
 
-
-        private void UpdateEvents(int EventId)
+        public class EditParams
         {
-            try
-            {
-                Request Request = new Request();
-                Request = db.Request
-                    .Where(x => x.EventId.Equals(EventId))
-                    .FirstOrDefault();
-                if (Request != null)
-                {
-                    List<RequestLine> lines = new List<RequestLine>();
-                    lines = db.RequestLine.Where(x => x.EventId.Equals(EventId)).ToList();
-                    //update master data by its lines                                       
-                    db.Update(Request);
-                    db.SaveChanges();
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-        public string AddEvents(Event evt, out int eventId)
-        {
-            string message = "";
-            SqlConnection conn = GetConnection();
-            SqlTransaction trans = conn.BeginTransaction();
-            eventId = 0;
-
-            try
-            {
-                SqlCommand cmd = new SqlCommand(@"insert into [Events]
-                                                (
-	                                                title
-	                                                ,[description]
-	                                                ,event_start
-	                                                ,event_end
-	                                                ,all_day
-                                                )
-                                                values
-                                                (
-	                                                @title
-	                                                ,@description
-	                                                ,@start
-	                                                ,@end
-	                                                ,@allDay
-                                                );
-                                                select scope_identity()", conn, trans)
-                {
-                    CommandType = CommandType.Text
-                };
-                cmd.Parameters.Add("@title", SqlDbType.VarChar).Value = evt.Title;
-                cmd.Parameters.Add("@description", SqlDbType.VarChar).Value = evt.Description;
-                cmd.Parameters.Add("@start", SqlDbType.DateTime).Value = evt.Start;
-                cmd.Parameters.Add("@end", SqlDbType.DateTime).Value = Helper.ToDBNullOrDefault(evt.End);
-                cmd.Parameters.Add("@allDay", SqlDbType.Bit).Value = evt.AllDay;
-
-                eventId = Convert.ToInt32(cmd.ExecuteScalar());
-
-                trans.Commit();
-            }
-            catch (Exception exp)
-            {
-                trans.Rollback();
-                message = exp.Message;
-            }
-            finally
-            {
-                CloseConnection(conn);
-            }
-
-            return message;
-        }
-
-        public string DeleteEvents(int eventId)
-        {
-            string message = "";
-            SqlConnection conn = GetConnection();
-            SqlTransaction trans = conn.BeginTransaction();
-
-            try
-            {
-                SqlCommand cmd = new SqlCommand(@"delete from 
-	                                                [Events]
-                                                where
-	                                                event_id=@eventId", conn, trans)
-                {
-                    CommandType = CommandType.Text
-                };
-                cmd.Parameters.Add("@eventId", SqlDbType.Int).Value = eventId;
-                cmd.ExecuteNonQuery();
-
-                trans.Commit();
-            }
-            catch (Exception exp)
-            {
-                trans.Rollback();
-                message = exp.Message;
-            }
-            finally
-            {
-                CloseConnection(conn);
-            }
-
-            return message;
+            public string key { get; set; }
+            public string action { get; set; }
+            public List<Request> added { get; set; }
+            public List<Request> changed { get; set; }
+            public List<Request> deleted { get; set; }
+            public Request value { get; set; }
         }
     }
 }
-

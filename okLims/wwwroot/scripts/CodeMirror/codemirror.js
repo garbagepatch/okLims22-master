@@ -131,7 +131,7 @@
     // very slow. So make the area wide instead.
     if (webkit) input.style.width = "1000px";
     else input.setAttribute("wrap", "off");
-    // If border: 0; -- iOS fails to open keyboard (Request #1287)
+    // If border: 0; -- iOS fails to open keyboard (issue #1287)
     if (ios) input.style.border = "1px solid black";
     input.setAttribute("autocorrect", "off"); input.setAttribute("autocapitalize", "off"); input.setAttribute("spellcheck", "false");
 
@@ -416,7 +416,7 @@
     var needsH = measure.scrollWidth > measure.clientWidth;
     if (needsH && measure.scrollWidth <= measure.clientWidth + 1 &&
         sWidth > 0 && !measure.hScrollbarTakesSpace)
-      needsH = false; // (Request #2562)
+      needsH = false; // (Issue #2562)
     var needsV = scrollHeight > measure.clientHeight;
 
     if (needsV) {
@@ -676,7 +676,7 @@
 
   function checkForWebkitWidthBug(cm, measure) {
     // Work around Webkit bug where it sometimes reserves space for a
-    // non-existing phantom scrollbar in the scroller (Request #2420)
+    // non-existing phantom scrollbar in the scroller (Issue #2420)
     if (cm.display.sizer.offsetWidth + cm.display.gutters.offsetWidth < cm.display.scroller.clientWidth - 1) {
       cm.display.sizer.style.minHeight = cm.display.heightForcer.style.top = "0px";
       cm.display.gutters.style.height = measure.docHeight + "px";
@@ -2121,11 +2121,11 @@
     // Apply workaround for two webkit bugs
     if (op.updatedDisplay && webkit) {
       if (cm.options.lineWrapping)
-        checkForWebkitWidthBug(cm, op.barMeasure); // (Request #2420)
+        checkForWebkitWidthBug(cm, op.barMeasure); // (Issue #2420)
       if (op.barMeasure.scrollWidth > op.barMeasure.clientWidth &&
           op.barMeasure.scrollWidth < op.barMeasure.clientWidth + 1 &&
           !hScrollbarTakesSpace(cm))
-        updateScrollbars(cm); // (Request #2562)
+        updateScrollbars(cm); // (Issue #2562)
     }
 
     // Fire change events, and delayed event handlers
@@ -3304,7 +3304,7 @@
       // select-all detection hack)
       if (!cm.curOp && cm.display.selForContextMenu != cm.doc.sel) {
         resetInput(cm);
-        if (webkit) setTimeout(bind(resetInput, cm, true), 0); // Request #1730
+        if (webkit) setTimeout(bind(resetInput, cm, true), 0); // Issue #1730
       }
     }
     slowPoll(cm);
@@ -3345,7 +3345,7 @@
       "px; left: " + (e.clientX - 5) + "px; z-index: 1000; background: " +
       (ie ? "rgba(255, 255, 255, .05)" : "transparent") +
       "; outline: none; border-width: 0; outline: none; overflow: hidden; opacity: .05; filter: alpha(opacity=5);";
-    if (webkit) var oldScrollY = window.scrollY; // Work around Chrome Request (#2712)
+    if (webkit) var oldScrollY = window.scrollY; // Work around Chrome issue (#2712)
     focusInput(cm);
     if (webkit) window.scrollTo(null, oldScrollY);
     resetInput(cm);
@@ -6035,7 +6035,7 @@
       }
     }
 
-    // See Request #2901
+    // See issue #2901
     if (webkit && /\bcm-tab\b/.test(builder.content.lastChild.className))
       builder.content.className = "cm-tab-wrap-hack";
 

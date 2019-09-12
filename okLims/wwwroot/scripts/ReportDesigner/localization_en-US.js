@@ -969,7 +969,7 @@ ej.ReportDesigner.Locale['en-US'] = {
             selectValue: 'Select a value'
         },
         errorMessage: {
-            startMessage: 'Report Viewer encountered some Requests on loading this report. Please',
+            startMessage: 'Report Viewer encountered some issues on loading this report. Please',
             middleMessage: ' Click here',
             endMessage: 'to see the error details',
             closeMessage: 'Close this message'

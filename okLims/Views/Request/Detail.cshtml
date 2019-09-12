@@ -27,8 +27,8 @@
             <div class="box-body">
 
                 <dl>
-                    <dt>@Html.DisplayNameFor(model => model.EventId)</dt>
-                    <dd>@Html.DisplayFor(item => item.EventId)</dd>
+                    <dt>@Html.DisplayNameFor(model => model.RequestId)</dt>
+                    <dd>@Html.DisplayFor(item => item.RequestId)</dd>
                     <dt> @Html.DisplayNameFor(model => model.FilterType)</dt>
                     <dd>@Html.DisplayFor(item => item.FilterID)</dd>
                     <dt>
@@ -120,7 +120,7 @@
             var dataManager = ej.DataManager({
                 url: "/api/RequestLine",
                 adaptor: new ej.WebApiAdaptor(),
-                headers: [{ "EventId": @Model.EventId}],
+                headers: [{ "RequestId": @Model.RequestId}],
                 offline: true
             });
 

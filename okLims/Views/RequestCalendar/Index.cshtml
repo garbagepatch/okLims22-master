@@ -1,103 +1,16 @@
+@using Syncfusion.EJ2
+
 @{
-    Layout = "_LayoutCalender";
+    var dataManager = new DataManager()
+    {
+        Url = "../api/RequestCalendar/GetData",
+        Adaptor = "UrlAdaptor",
+        CrudUrl = "../api/RequestCalendar/UpdateData",
+        CrossDomain = true
+    };
 }
-<div id="calendar-wrapper">
-    <div id='calendar'></div>
-</div>
 
-<div class="modal fade" id="eventModal" role="dialog" aria-labelledby="eventModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="eventModalLabel">Request</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
-            <div class="modal-body">
-                <form id="eventForm">
-                    <div class="form-group row">
-                        <label for="" class="col-sm-3 col-form-label">Title</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="EventTitle">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="" class="col-sm-3 col-form-label">RequesterEmail</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="RequesterEmail">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="" class="col-sm-3 col-form-label">Start Time</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="StartTime">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="" class="col-sm-3 col-form-label">End Time</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="EndTime">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="" class="col-sm-3 col-form-label">Description</label>
-                        <div class="col-sm-9">
-                            <textarea class="form-control" id="Description" rows="5"></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="" class="col-sm-3 col-form-label">Filter Type</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="dropdown" id="FilterID">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="" class="col-sm-3 col-form-label">Filter Size</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="dropdown" id="SizeID">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="" class="col-sm-3 col-form-label">Controller Type</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="dropdown" id="ControllerID">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="" class="col-sm-3 col-form-label">Laboratory</label>
-                        <div class="col-sm-9">
-                            <input type="text" class="dropdown" id="LaboratoryId" />
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class="col-sm-3 offset-sm-9">
-                            <label><input type="checkbox" id="AllDay" /> AllDay</label>
-                        </div>
-                    </div>
-                    <input type="hidden" id="isNewEvent" />
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" id="deleteEvent">Delete</button>
-                <div>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="eventModalSave">Save Changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@section scripts{
-
-    <script type="text/javascript">
-         $(function () {
-
-            $('#calendar').fullCalendar({
-                events: 'api/RequestCalendar'
-            });
-
-        });
-
-    </script>
-
-
-}
+                <ejs-schedule id="schedule" width="100%" height="550" selectedDate=DateTime.Now>
+                    <e-schedule-eventsettings dataSource="dataManager">
+                    </e-schedule-eventsettings>
+                </ejs-schedule>
