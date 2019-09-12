@@ -24,7 +24,6 @@ namespace okLims.Controllers.api
 
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> GetLaboratory()
         {
             List<Laboratory> Items = await _context.Laboratory.ToListAsync();
